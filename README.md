@@ -75,7 +75,9 @@ docker build -t front-creditos .
 docker run -p 80:80 front-creditos
 ```
 
-A aplicação estará disponível em `http://localhost`.
+**A aplicação estará disponível em `http://localhost` (porta 80).**
+
+> **Nota**: O container está configurado para rodar obrigatoriamente na porta 80. O Nginx interno serve a aplicação nesta porta e o mapeamento `-p 80:80` expõe a aplicação no host.
 
 ### Docker Compose (com Backend)
 
