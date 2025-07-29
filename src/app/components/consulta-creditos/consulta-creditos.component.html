@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="header">
+    <h1>Consulta de Créditos Constituídos</h1>
+    <p>Consulte créditos por número da NFS-e ou número do crédito</p>
+  </div>
+
+  <div class="form-container">
+    <div class="form-group">
+      <label>Tipo de Consulta:</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input 
+            type="radio" 
+            id="radio-nfse" 
+            name="tipoConsulta" 
+            value="nfse" 
+            [(ngModel)]="tipoConsulta" 
+            (change)="onTipoConsultaChange()">
+          <label for="radio-nfse">Por Número da NFS-e</label>
+        </div>
+        <div class="radio-option">
+          <input 
+            type="radio" 
+            id="radio-credito" 
+            name="tipoConsulta" 
+            value="credito" 
+            [(ngModel)]="tipoConsulta" 
+            (change)="onTipoConsultaChange()">
+          <label for="radio-credito">Por Número do Crédito</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="tipoConsulta === 'nfse'">
+      <label for="numeroNfse">Número da NFS-e:</label>
+      <input 
+        type="text" 
+        id="numeroNfse" 
+        [(ngModel)]="numeroNfse" 
+        placeholder="Digite o número da NFS-e"
+        class="form-control"
+        (keyup.enter)="consultar()">
+    </div>
+
+    <div class="form-group" *ngIf="tipoConsulta === 'credito'">
+      <label for="numeroCredito">Número do Crédito:</label>
+      <input 
+        type="text" 
+        id="numeroCredito" 
+        [(ngModel)]="numeroCredito" 
+        placeholder="Digite o número do crédito"
+        class="form-control"
+        (keyup.enter)="consultar()">
+    </div>
+
+    <button 
+      type="button" 
+      (click)="consultar()" 
+      [disabled]="loading"
+      class="btn btn-primary">
+      <span *ngIf="loading" class="spinner"></span>
+      {{ loading ? 'Consultando...' : 'Consultar' }}
+    </button>
+  </div>
+
+  <div *ngIf="erro" class="alert alert-error">
+    {{ erro }}
+  </div>
+
+  <!-- Resultados para consulta por NFS-e (múltiplos créditos) -->
+  <div *ngIf="creditos.length > 0" class="results-container">
+    <h2>Créditos Encontrados ({{ creditos.length }})</h2>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Número do Crédito</th>
+            <th>Número NFS-e</th>
+            <th>Data Constituição</th>
+            <th>Valor ISSQN</th>
+            <th>Tipo Crédito</th>
+            <th>Simples Nacional</th>
+            <th>Alíquota</th>
+            <th>Valor Faturado</th>
+            <th>Valor Dedução</th>
+            <th>Base Cálculo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let credito of creditos">
+            <td>{{ credito.numeroCredito }}</td>
+            <td>{{ credito.numeroNfse }}</td>
+            <td>{{ formatarData(credito.dataConstituicao) }}</td>
+            <td>{{ formatarValor(credito.valorIssqn) }}</td>
+            <td>{{ credito.tipoCredito }}</td>
+            <td>{{ credito.simplesNacional }}</td>
+            <td>{{ formatarPercentual(credito.aliquota) }}</td>
+            <td>{{ formatarValor(credito.valorFaturado) }}</td>
+            <td>{{ formatarValor(credito.valorDeducao) }}</td>
+            <td>{{ formatarValor(credito.baseCalculo) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Resultado para consulta por número do crédito (crédito único) -->
+  <div *ngIf="creditoUnico" class="results-container">
+    <h2>Detalhes do Crédito</h2>
+    <div class="credit-details">
+      <div class="detail-row">
+        <span class="label">Número do Crédito:</span>
+        <span class="value">{{ creditoUnico.numeroCredito }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Número NFS-e:</span>
+        <span class="value">{{ creditoUnico.numeroNfse }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Data de Constituição:</span>
+        <span class="value">{{ formatarData(creditoUnico.dataConstituicao) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Valor ISSQN:</span>
+        <span class="value">{{ formatarValor(creditoUnico.valorIssqn) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Tipo de Crédito:</span>
+        <span class="value">{{ creditoUnico.tipoCredito }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Simples Nacional:</span>
+        <span class="value">{{ creditoUnico.simplesNacional }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Alíquota:</span>
+        <span class="value">{{ formatarPercentual(creditoUnico.aliquota) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Valor Faturado:</span>
+        <span class="value">{{ formatarValor(creditoUnico.valorFaturado) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Valor Dedução:</span>
+        <span class="value">{{ formatarValor(creditoUnico.valorDeducao) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Base de Cálculo:</span>
+        <span class="value">{{ formatarValor(creditoUnico.baseCalculo) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
