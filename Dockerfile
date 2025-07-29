@@ -21,11 +21,18 @@ FROM nginx:alpine
 # Copiar arquivos buildados
 COPY --from=build /app/dist/front-creditos/browser /usr/share/nginx/html
 
-# Copiar configuração customizada do nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copiar configuração customizada do nginx como template
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
+
+# Copiar script de inicialização
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Instalar gettext para envsubst
+RUN apk add --no-cache gettext
 
 # Expor porta 80
 EXPOSE 80
 
-# Comando para iniciar o nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar com script personalizado
+CMD ["/docker-entrypoint.sh"]

@@ -77,7 +77,19 @@ docker run -p 80:80 front-creditos
 
 **A aplicação estará disponível em `http://localhost` (porta 80).**
 
-> **Nota**: O container está configurado para rodar obrigatoriamente na porta 80. O Nginx interno serve a aplicação nesta porta e o mapeamento `-p 80:80` expõe a aplicação no host.
+#### Configuração Dinâmica do Backend
+
+O container detecta automaticamente o IP local para configurar o proxy da API. Você também pode especificar manualmente:
+
+```bash
+# Especificar IP e porta do backend manualmente o ip 127.0.0.1 deve ser alterado para seu ip local 
+docker run -p 80:80 -e BACKEND_HOST=127.0.0.1 -e BACKEND_PORT=8080 front-creditos
+
+# Usar apenas IP personalizado (porta padrão 8080)
+docker run -p 80:80 -e BACKEND_HOST=127.0.0.1 front-creditos
+```
+
+> **Nota**: O container está configurado para rodar obrigatoriamente na porta 80. O sistema detecta automaticamente o IP local e configura o proxy nginx para o backend. Se não conseguir detectar, usa `host.docker.internal` como fallback.
 
 ### Docker Compose (com Backend)
 
